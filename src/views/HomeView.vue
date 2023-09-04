@@ -143,14 +143,18 @@ export default {
 
 .cap-left {
   display: inline-block;
-  width: 20px; /* Adjust the width to control the size of the "cap" */
+  width: 20px;
 }
 
 .indent {
-  margin-left: 40px; /* Adjust the indentation amount as needed */
+  margin-left: 40px;
 }
 
 .bold-text {
   font-weight: bold;
+}
+
+body{
+  background: lightgrey;
 }
 </style>
