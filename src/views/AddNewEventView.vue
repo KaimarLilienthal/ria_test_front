@@ -15,7 +15,7 @@
   </div>
   <div class="container" style="padding-bottom: 30px">
     <div class="row g-0">
-      <div class="col-12" style="background-color: red">
+      <div class="col-12" style="background-color: white">
         <div class="form-floating mb-3">
           <div class="row" style="padding-top: 10px">
             <div class="col-4" ></div>
@@ -23,23 +23,35 @@
           </div>
           <div class="row" style="padding-top: 10px">
             <div class="col-4" ></div>
-            <div class="col-2" ><span>Ürituse nimi</span></div>
+            <div class="col-2" ><span>Ürituse nimi:</span></div>
             <div class="col-2" ><input type="text" aria-label="event-name"></div>
           </div>
           <div class="row" style="padding-top: 10px">
             <div class="col-4" ></div>
-            <div class="col-2" ><span>Toimumisaeg</span></div>
+            <div class="col-2" ><span>Toimumisaeg:</span></div>
+            <div class="col-2" >
+              <input type="datetime-local" id="datetimePicker" class="form-control">
+            </div>
+          </div>
+          <div class="row" style="padding-top: 10px">
+            <div class="col-4" ></div>
+            <div class="col-2" ><span>Koht:</span></div>
             <div class="col-2" ><input type="text" aria-label="event-name"></div>
           </div>
           <div class="row" style="padding-top: 10px">
             <div class="col-4" ></div>
-            <div class="col-2" ><span>Koht</span></div>
-            <div class="col-2" ><input type="text" aria-label="event-name"></div>
+            <div class="col-2" >Lisainfo:</div>
+            <div class="col-2" ><input class="bigger-bottom-input" type="text" aria-label="event-name" maxlength="5000"></div>
           </div>
-          <div class="row" style="padding-top: 10px">
-            <div class="col-4" ></div>
-            <div class="col-2" ><span>Lisainfo</span></div>
-            <div class="col-2" ><input type="text" aria-label="event-name"></div>
+          <div class="row" style="padding-top: 30px">
+            <div class="col-4"></div>
+            <div class="col-4" ><button @click="toHome" type="button" class="btn btn-secondary btn-sm">Tagasi</button>
+              <span class="mx-2"></span>
+              <button type="button" class="btn btn-primary btn-sm" style="background-color: darkblue; padding-right: 23px;">
+                <span>Lisa</span></button>
+            </div>
+
+
           </div>
       </div>
     </div>
@@ -47,13 +59,29 @@
   </div>
 </template>
 
-<script setup>
+<script>
+import router from "@/router";
 
+export default {
+  methods: {
+    toHome(){
+      router.push({name: 'homeRoute'})
+    }
+  },
+
+    mounted() {
+      var datetimePicker = document.getElementById("datetimePicker");
+
+      datetimePicker.addEventListener("input", function () {
+        var selectedDate = new Date(datetimePicker.value);
+        var currentDate = new Date();
+
+        if (selectedDate < currentDate) {
+          datetimePicker.value = "";
+        }
+      });
+    }
+
+}
 </script>
 
-<style>
-body{
-  background: lightgrey;
-}
-
-</style>

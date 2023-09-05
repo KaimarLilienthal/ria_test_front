@@ -1,6 +1,9 @@
+<head>
+<link rel="stylesheet" href="src/assets/my-style.css">
+</head>
 <template>
   <div style="padding-top: 30px; padding-bottom: 30px;">
-    <header class="navbar" style="background-color: white; padding: unset">
+    <header class="navbar my-navbar">
       <div class="container">
 
         <div class="col-auto justify-content-start">
@@ -31,10 +34,10 @@
     </header>
     <router-view/>
 
-    <footer class="footer" style="background-color: #282727; padding: 20px;">
+    <footer class="footer my-footer">
       <div class="container text-lg-start">
         <div class="row">
-          <div class="col" style="color: white">
+          <div class="col">
             <h4>Fusce</h4>
             <h6>Econsectetur</h6>
             <h6>Ksollicitudin</h6>

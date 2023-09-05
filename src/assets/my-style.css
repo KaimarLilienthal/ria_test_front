@@ -6,3 +6,46 @@ body{
     color: transparent;
 }
 
+.my-footer {
+    background-color: #282727;
+    padding: 20px;
+    color: white;
+}
+.my-navbar {
+    background-color: white;
+    padding: unset;
+}
+.text-left {
+    display: inline-block;
+    text-align: left;
+}
+
+.cap-left {
+    display: inline-block;
+    width: 20px;
+}
+
+.indent {
+    margin-left: 40px;
+}
+
+.bold-text {
+    font-weight: bold;
+}
+.bigger-bottom-input {
+    height: 80px; /* Set the initial height */
+    transition: height 0.3s; /* Add a transition for smooth animation */
+}
+
+#datetimePicker {
+    border-radius: 0;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    width: 188px;
+}
+.my-select-form {
+    border-radius: 0;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    width: 188px;
+}

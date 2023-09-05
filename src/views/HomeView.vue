@@ -62,15 +62,15 @@
               <th scope="row">1</th>
               <td>Nunc lobortis metus eu massa viverra ultri iplacerat nibh</td>
               <td>03-03-2016</td>
-              <td>OSAVÕTJAD</td>
-              <td>X</td>
+              <td><a href="/participant" style="text-decoration: none; color: inherit;">OSAVÕTJAD</a></td>
+              <td style="cursor: pointer;">X</td>
             </tr>
             <tr>
               <th scope="row">1</th>
               <td>Nunc lobortis metus eu massa viverra ultri iplacerat nibh</td>
               <td>03-03-2016</td>
-              <td>OSAVÕTJAD</td>
-              <td>X</td>
+              <td><a href="/participant" style="text-decoration: none; color: inherit;">OSAVÕTJAD</a></td>
+              <td style="cursor: pointer;">X</td>
             </tr>
             </tbody>
           </table>
@@ -81,40 +81,19 @@
       </div>
       <div class="col-6 d-flex align-items-center  justify-content-center">
         <div style="background-color: white; height: 100%; width:calc(100% + 5px);">
-          <div class="d-flex align-items-center justify-content-center" style="color: darkblue; height: 100%;">
-            <table class="table table-borderless" style="color: darkblue; padding-left: 13px;">
-              <thead>
-              <tr>
-                <th scope="col"></th>
-                <th scope="col"></th>
-                <th scope="col"></th>
-                <th scope="col"></th>
-                <th scope="col"></th>
-              </tr>
-              </thead>
-              <tbody>
-              <tr>
-                <th scope="row">1</th>
-                <td>Nunc lobortis metus eu massa viverra ultri iplacerat nibh</td>
-                <td>03-03-2016</td>
-                <td>OSAVÕTJAD</td>
-                <td>X</td>
-              </tr>
-              <tr>
-                <th scope="row">1</th>
-                <td>Nunc lobortis metus eu massa viverra ultri iplacerat nibh</td>
-                <td>03-03-2016</td>
-                <td>OSAVÕTJAD</td>
-                <td>X</td>
-              </tr>
-              <tr>
-              <th scope="row"></th>
-              </tr>
-              <tr>
-              <th scope="row"></th>
-              </tr>
-              </tbody>
-            </table>
+          <div v-for="event in events" v-if="event.status === 'P'" :key="event.eventId" class="d-flex align-items-center justify-content-center" style="color: darkblue; height: 100%;">
+            <div>
+              <h4>{{event.eventName}}</h4>
+            </div>
+            <div>
+              <h4>{{event.eventDate}}</h4>
+            </div>
+            <div>
+              <h4 href="/participant" style="text-decoration: none; color: inherit;">OSAVÕTJAD</h4>
+            </div>
+            <div>
+              <h4 style="cursor: pointer;">X</h4>
+            </div>
           </div>
         </div>
       </div>
@@ -127,34 +106,37 @@ import router from "@/router";
 
 export default {
   name: 'homeRoute',
-  methods: {
-    toAddNewEvent(){
-      router.push({name: 'addNewEventRoute'})
+  data() {
+    return {
+      events: [
+        {
+          eventId: 0,
+          eventName: 'Kulumulu',
+          eventDate: '04.09.2023',
+          status: 'P'
+        }
+      ]
     }
-  }
+  },
+  methods: {
+    toAddNewEvent() {
+      router.push({name: 'addNewEventRoute'})
+    },
+    getAllEvents: function () {
+      this.$http.get("/events")
+          .then(response => {
+            this.events = response.data
+          })
+          .catch(error => {
+            router.push({name: 'errorRoute'})
+          })
+    },
+  },
+  beforeMount() {
+    this.getAllEvents()
+  },
 }
+
 </script>
 
-<style>
-.text-left {
-  display: inline-block;
-  text-align: left;
-}
 
-.cap-left {
-  display: inline-block;
-  width: 20px;
-}
-
-.indent {
-  margin-left: 40px;
-}
-
-.bold-text {
-  font-weight: bold;
-}
-
-body{
-  background: lightgrey;
-}
-</style>
