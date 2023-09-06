@@ -81,39 +81,57 @@
       </div>
       <div class="col-6 d-flex align-items-center  justify-content-center">
         <div style="background-color: white; height: 100%; width:calc(100% + 5px);">
-          <div v-for="event in events" v-if="event.status === 'P'" :key="event.eventId" class="d-flex align-items-center justify-content-center" style="color: darkblue; height: 100%;">
-            <div>
-              <h4>{{event.eventName}}</h4>
-            </div>
-            <div>
-              <h4>{{event.eventDate}}</h4>
-            </div>
-            <div>
-              <h4 href="/participant" style="text-decoration: none; color: inherit;">OSAVÕTJAD</h4>
-            </div>
-            <div>
-              <h4 style="cursor: pointer;">X</h4>
-            </div>
+          <table id="myTable" v-for="(event,index) in activeEvents"  :key="event.eventId" class="table table-borderless" style="color: darkblue; padding-left: 13px;">
+            <thead>
+            <tr>
+              <th scope="col"></th>
+              <th scope="col"></th>
+              <th scope="col"></th>
+              <th scope="col"></th>
+              <th scope="col"></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+              <th scope="row">{{index + 1}}</th>
+              <td>{{event.eventName}}</td>
+              <td>{{event.eventDate}}</td>
+              <td><a href="/participant" style="text-decoration: none; color: inherit;">OSAVÕTJAD</a></td>
+              <td style="cursor: pointer;">X</td>
+            </tr>
+            </tbody>
+            </table>
+
+
           </div>
         </div>
       </div>
     </div>
-  </div>
+
 </template>
 
 <script>
 import router from "@/router";
 
 export default {
+
   name: 'homeRoute',
   data() {
     return {
-      events: [
+      activeStatus: 'F',
+      pastStatus: 'P',
+      activeEvents: [
         {
           eventId: 0,
-          eventName: 'Kulumulu',
-          eventDate: '04.09.2023',
-          status: 'P'
+          eventName: '',
+          eventDate: ''
+        }
+      ],
+      pastEvents: [
+        {
+          eventId: 0,
+          eventName: '',
+          eventDate: ''
         }
       ]
     }
@@ -122,19 +140,46 @@ export default {
     toAddNewEvent() {
       router.push({name: 'addNewEventRoute'})
     },
-    getAllEvents: function () {
-      this.$http.get("/events")
-          .then(response => {
-            this.events = response.data
-          })
+
+    getAllActiveEvents: function () {
+      this.$http.get("/event", {
+            params: {
+              status: this.activeStatus
+            }
+          }
+      ).then(response => {
+        this.activeEvents = response.data
+        this.formatEventDates(this.activeEvents);
+      })
           .catch(error => {
             router.push({name: 'errorRoute'})
           })
     },
+    // Function to format event dates
+    formatEventDates(events) {
+      for (let i = 0; i < events.length; i++) {
+        if (events[i].eventDate) {
+          events[i].eventDate = this.formatDate(events[i].eventDate);
+        }
+      }
+    },
+
+    // Date formatting function
+    formatDate(inputDate) {
+      const parts = inputDate.split('-');
+      if (parts.length === 3) {
+        const [year, month, day] = parts;
+        return `${day}-${month}-${year}`;
+      } else {
+        // Handle invalid date format
+        return 'Invalid Date';
+      }
+    },
   },
   beforeMount() {
-    this.getAllEvents()
+    this.getAllActiveEvents()
   },
+
 }
 
 </script>
