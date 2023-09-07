@@ -1,4 +1,4 @@
-body{
+body {
     background: lightgrey;
 }
 
@@ -11,10 +11,12 @@ body{
     padding: 20px;
     color: white;
 }
+
 .my-navbar {
     background-color: white;
     padding: unset;
 }
+
 .text-left {
     display: inline-block;
     text-align: left;
@@ -32,6 +34,7 @@ body{
 .bold-text {
     font-weight: bold;
 }
+
 .bigger-bottom-input {
     height: 80px; /* Set the initial height */
     transition: height 0.3s; /* Add a transition for smooth animation */
@@ -43,9 +46,11 @@ body{
     padding-bottom: 2px;
     width: 188px;
 }
+
 .my-select-form {
     border-radius: 0;
     padding-top: 2px;
     padding-bottom: 2px;
     width: 188px;
 }
+

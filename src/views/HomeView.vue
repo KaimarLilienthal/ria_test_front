@@ -47,7 +47,8 @@
       <div class="col-6"
            style="background-color: white; width:calc(50% - 5px)">
         <div style="width: 545px; margin: 0 auto; margin-left: 0 !important;">
-          <table class="table table-borderless" style="color: darkblue; padding-left: 13px;">
+          <table v-for="(activeEvent, index) in activeEvents" :key="activeEvent.id" class="table table-borderless"
+                 style="color: darkblue; padding-left: 13px;">
             <thead>
             <tr>
               <th scope="col"></th>
@@ -59,54 +60,51 @@
             </thead>
             <tbody>
             <tr>
-              <th scope="row">1</th>
-              <td>Nunc lobortis metus eu massa viverra ultri iplacerat nibh</td>
-              <td>03-03-2016</td>
-              <td><a href="/participant" style="text-decoration: none; color: inherit;">OSAVÕTJAD</a></td>
-              <td style="cursor: pointer;">X</td>
-            </tr>
-            <tr>
-              <th scope="row">1</th>
-              <td>Nunc lobortis metus eu massa viverra ultri iplacerat nibh</td>
-              <td>03-03-2016</td>
-              <td><a href="/participant" style="text-decoration: none; color: inherit;">OSAVÕTJAD</a></td>
-              <td style="cursor: pointer;">X</td>
+              <th scope="row">{{ index + 1 }}</th>
+              <td>{{ activeEvent.eventName }}</td>
+              <td>{{ activeEvent.eventDate }}</td>
+              <td @click="navigateToParticipantView(activeEvent.id)" style="text-decoration: none; color: inherit;">OSAVÕTJAD</td>
+              <td @click="toDeleteEvent(activeEvent.id)" style="cursor: pointer;">X</td>
             </tr>
             </tbody>
           </table>
         </div>
-        <div class="d-flex align-items-center justify-content-between">
-          <button type="button" @click="toAddNewEvent" class="btn btn-sm">LISA ÜRITUS</button>
-        </div>
+
       </div>
       <div class="col-6 d-flex align-items-center  justify-content-center">
         <div style="background-color: white; height: 100%; width:calc(100% + 5px);">
-          <table id="myTable" v-for="(event,index) in activeEvents"  :key="event.eventId" class="table table-borderless" style="color: darkblue; padding-left: 13px;">
+          <table id="myTable" v-for="(pastEvent, index) in pastEvents" :key="pastEvent.id"
+                 class="table table-borderless"
+                 style="color: darkblue; padding-left: 13px;">
             <thead>
             <tr>
               <th scope="col"></th>
               <th scope="col"></th>
               <th scope="col"></th>
               <th scope="col"></th>
-              <th scope="col"></th>
+              <th scope="col" style="width: 100px;"></th>
             </tr>
             </thead>
             <tbody>
             <tr>
-              <th scope="row">{{index + 1}}</th>
-              <td>{{event.eventName}}</td>
-              <td>{{event.eventDate}}</td>
-              <td><a href="/participant" style="text-decoration: none; color: inherit;">OSAVÕTJAD</a></td>
-              <td style="cursor: pointer;">X</td>
+              <th scope="row">{{ index + 1 }}</th>
+              <td>{{ pastEvent.eventName }}</td>
+              <td>{{ pastEvent.eventDate }}</td>
+              <td><a @click="navigateToParticipantView(pastEvent.id)" style="text-decoration: none; color: inherit;">OSAVÕTJAD</a>
+              </td>
+              <td @click="toDeleteEvent(pastEvent.id)" style="cursor: pointer;">X</td>
             </tr>
             </tbody>
-            </table>
+          </table>
 
 
-          </div>
         </div>
       </div>
+      <div class="d-flex align-items-center justify-content-between">
+        <button type="button" @click="toAddNewEvent" class="btn btn-sm">LISA ÜRITUS</button>
+      </div>
     </div>
+  </div>
 
 </template>
 
@@ -118,18 +116,19 @@ export default {
   name: 'homeRoute',
   data() {
     return {
+      eventId: 0,
       activeStatus: 'F',
       pastStatus: 'P',
       activeEvents: [
         {
-          eventId: 0,
+          id: 0,
           eventName: '',
           eventDate: ''
         }
       ],
       pastEvents: [
         {
-          eventId: 0,
+          id: 0,
           eventName: '',
           eventDate: ''
         }
@@ -155,7 +154,41 @@ export default {
             router.push({name: 'errorRoute'})
           })
     },
-    // Function to format event dates
+    getAllPastEvents: function () {
+      this.$http.get("/event", {
+            params: {
+              status: this.pastStatus
+            }
+          }
+      ).then(response => {
+        this.pastEvents = response.data
+        this.formatEventDates(this.pastEvents);
+      })
+          .catch(error => {
+            router.push({name: 'errorRoute'})
+          })
+    },
+
+    navigateToParticipantView(id) {
+      this.eventId = ''
+      this.eventId = id
+      router.push({name: 'participantRoute', query: {eventId: this.eventId}})
+    },
+
+
+    toDeleteEvent: function (id) {
+      this.$http.delete("/event/delete", {
+            params: {
+              eventId: id
+            }
+          }
+      ).then(response => {
+        window.location.reload();
+      }).catch(error => {
+        console.log('Error:', error);
+      })
+    },
+
     formatEventDates(events) {
       for (let i = 0; i < events.length; i++) {
         if (events[i].eventDate) {
@@ -164,7 +197,6 @@ export default {
       }
     },
 
-    // Date formatting function
     formatDate(inputDate) {
       const parts = inputDate.split('-');
       if (parts.length === 3) {
@@ -174,11 +206,14 @@ export default {
         // Handle invalid date format
         return 'Invalid Date';
       }
-    },
+    }
+    ,
   },
   beforeMount() {
     this.getAllActiveEvents()
-  },
+    this.getAllPastEvents()
+  }
+  ,
 
 }
 

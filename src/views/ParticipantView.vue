@@ -24,19 +24,18 @@
           <div class="row" style="padding-top: 10px">
             <div class="col-4"></div>
             <div class="col-2"><span>Ürituse nimi:</span></div>
-            <div class="col-2"><span>Ürituse nimi</span></div>
+            <div class="col-2"><span>{{ event.eventName }}</span></div>
           </div>
           <div class="row" style="padding-top: 10px">
             <div class="col-4"></div>
             <div class="col-2"><span>Toimumisaeg:</span></div>
-            <div class="col-2">
-              <span>23.09.2023</span>
+            <div class="col-2"><span>{{ event.eventDate }}</span>
             </div>
           </div>
           <div class="row" style="padding-top: 10px">
             <div class="col-4"></div>
             <div class="col-2"><span>Koht:</span></div>
-            <div class="col-2"><span>Kohapealne kõrts</span></div>
+            <div class="col-2"><span>{{ event.eventPlace }}</span></div>
           </div>
           <div class="row" style="padding-top: 10px">
             <div class="col-4"></div>
@@ -47,7 +46,8 @@
             <div class="col-6 d-flex align-items-center  justify-content-center">
               <div style="background-color: white; height: 100%; width:calc(100% + 5px);">
                 <div class="d-flex align-items-center justify-content-center" style="color: darkblue; height: 100%;">
-                  <table class="table table-borderless" style="color: darkblue; padding-left: 13px;">
+                  <table v-for="(participant, index) in participants" :key="participant.id"
+                         class="table table-borderless" style="color: darkblue; padding-left: 13px;">
                     <thead>
                     <tr>
                       <th scope="col"></th>
@@ -59,16 +59,13 @@
                     </thead>
                     <tbody>
                     <tr>
-                      <th scope="row">1</th>
-                      <td>Reet Linna</td>
-                      <td>37788669910</td>
-                      <td><a href="/participant/info" style="text-decoration: none; color: inherit;">VAATA</a></td>
-                      <td style="cursor: pointer;">KUSTUTA</td>
-                    </tr>
-                    <tr>
-                      <th scope="row">1</th>
-                      <td>Jokker Nägu</td>
-                      <td>46868686810</td>
+                      <th scope="row">{{ index + 1 }}</th>
+                      <td v-if="participant.status === 'P'">
+                         {{participant.personFirstname + " " + participant.personLastname}}
+                      </td>
+                      <td v-else>{{ participant.companyName }}</td>
+                      <td v-if="participant.status === 'P'">{{ participant.personCode }}</td>
+                      <td v-else>{{ participant.companyRegistrationCode }}</td>
                       <td><a href="/participant/info" style="text-decoration: none; color: inherit;">VAATA</a></td>
                       <td style="cursor: pointer;">KUSTUTA</td>
                     </tr>
@@ -140,7 +137,8 @@
             <div class="row" style="padding-top: 10px">
               <div class="col-4"></div>
               <div class="col-2">Lisainfo:</div>
-              <div class="col-2"><input class="bigger-bottom-input" type="text" aria-label="event-name" maxlength="1500"></div>
+              <div class="col-2"><input class="bigger-bottom-input" type="text" aria-label="event-name"
+                                        maxlength="1500"></div>
             </div>
           </div>
 
@@ -174,7 +172,8 @@
             <div class="row" style="padding-top: 10px">
               <div class="col-4"></div>
               <div class="col-2">Lisainfo:</div>
-              <div class="col-2"><input class="bigger-bottom-input" type="text" aria-label="event-name" maxlength="5000"></div>
+              <div class="col-2"><input class="bigger-bottom-input" type="text" aria-label="event-name"
+                                        maxlength="5000"></div>
             </div>
           </div>
 
@@ -198,18 +197,41 @@
 
 <script>
 import router from "@/router"
+import {useRoute} from "vue-router";
 
 
 export default {
   data() {
     return {
-      selectedOption: 'Person'
+      eventId: Number(useRoute().query.eventId),
+      selectedOption: 'Person',
+      event: [
+        {
+          id: 0,
+          eventName: '',
+          eventDate: '',
+          eventPlace: '',
+          eventInfo: '',
+          status: ''
+        }
+      ],
+      participants: [
+        {
+          id: 0,
+          personFirstname: '',
+          personLastname: '',
+          personCode: '',
+          companyName: '',
+          companyRegistrationCode: '',
+          status: ''
+        }
+      ]
     }
   },
   computed: {
-      isPersonSelected() {
-        return this.selectedOption === 'Person';
-      },
+    isPersonSelected() {
+      return this.selectedOption === 'Person';
+    },
     isCompanySelected() {
       return this.selectedOption === 'Company';
     }
@@ -218,9 +240,52 @@ export default {
   methods: {
     toHome() {
       router.push({name: 'homeRoute'})
-    }
     },
+    getEventParticipants: function () {
+      this.$http.get("/event/participants", {
+            params: {
+              eventId: this.eventId
+            }
+          }
+      ).then(response => {
+        this.participants = response.data
+      }).catch(error => {
+        router.push({name: 'errorRoute'})
+      })
+    },
+
+    getEvent: function () {
+      this.$http.get("/event/info", {
+            params: {
+              eventId: this.eventId
+            }
+          }
+      ).then(response => {
+        this.event = response.data
+        this.event.eventDate = this.formatDate(this.event.eventDate);
+      })
+          .catch(error => {
+            router.push({name: 'errorRoute'})
+          })
+    },
+    formatDate(inputDate) {
+      const parts = inputDate.split('-');
+      if (parts.length === 3) {
+        const [year, month, day] = parts;
+        return `${day}-${month}-${year}`;
+      } else {
+        return 'Invalid Date';
+      }
+    }
+
+  },
+  beforeMount() {
+    this.getEvent(),
+    this.getEventParticipants()
   }
+
+
+}
 
 
 </script>
