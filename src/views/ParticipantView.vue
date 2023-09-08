@@ -46,8 +46,7 @@
             <div class="col-6 d-flex align-items-center  justify-content-center">
               <div style="background-color: white; height: 100%; width:calc(100% + 5px);">
                 <div class="d-flex align-items-center justify-content-center" style="color: darkblue; height: 100%;">
-                  <table v-for="(participant, index) in participants" :key="participant.id"
-                         class="table table-borderless" style="color: darkblue; padding-left: 13px;">
+                  <table class="table table-borderless" style="color: darkblue; padding-left: 13px;">
                     <thead>
                     <tr>
                       <th scope="col"></th>
@@ -58,16 +57,16 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr>
+                    <tr  v-for="(participant, index) in participants" :key="participant.id" >
                       <th scope="row">{{ index + 1 }}</th>
                       <td v-if="participant.status === 'P'">
                          {{participant.personFirstname + " " + participant.personLastname}}
                       </td>
                       <td v-else>{{ participant.companyName }}</td>
-                      <td v-if="participant.status === 'P'">{{ participant.personCode }}</td>
+                      <td v-if="participant.status === 'P'">{{ participant.personIdCode }}</td>
                       <td v-else>{{ participant.companyRegistrationCode }}</td>
-                      <td><a href="/participant/info" style="text-decoration: none; color: inherit;">VAATA</a></td>
-                      <td style="cursor: pointer;">KUSTUTA</td>
+                      <td><a @click="navigateToParticipantInfoView(participant.id)" style="text-decoration: none; color: inherit;">VAATA</a></td>
+                      <td @click="toDeleteParticipant(participant.id)" style="cursor: pointer;">KUSTUTA</td>
                     </tr>
                     </tbody>
                   </table>
@@ -79,7 +78,7 @@
       </div>
     </div>
   </div>
-  <div class="container" style="padding-bottom: 30px">
+  <div v-if="event.status === 'F'" class="container" style="padding-bottom: 30px">
     <div class="row g-0">
       <div class="col-12" style="background-color: white">
         <div class="form-floating mb-3">
@@ -111,33 +110,33 @@
             <div class="row" style="padding-top: 10px">
               <div class="col-4"></div>
               <div class="col-2"><span>Eesnimi:</span></div>
-              <div class="col-2"><input type="text" aria-label="event-name"></div>
+              <div class="col-2"><input v-model="participantForm.personFirstname" type="text" aria-label="event-name"></div>
             </div>
             <div class="row" style="padding-top: 10px">
               <div class="col-4"></div>
               <div class="col-2"><span>Perenimi:</span></div>
-              <div class="col-2"><input type="text" aria-label="event-name"></div>
+              <div class="col-2"><input v-model="participantForm.personLastname" type="text" aria-label="event-name"></div>
             </div>
             <div class="row" style="padding-top: 10px">
               <div class="col-4"></div>
               <div class="col-2"><span>Isikukood:</span></div>
-              <div class="col-2"><input type="text" aria-label="event-name"></div>
+              <div class="col-2"><input v-model="participantForm.personIdCode" type="text" aria-label="event-name"></div>
             </div>
             <div class="row" style="padding-top: 10px">
               <div class="col-4"></div>
               <div class="col-2"><span>Makseviis:</span></div>
               <div class="col-2">
-                <select class="select my-select-form">
+                <select v-model="participantForm.personPaymentType" class="select my-select-form">
                   <option selected></option>
-                  <option value="1">Pangaülekanne</option>
-                  <option value="3">Sularaha</option>
+                  <option value="Pangaülekanne">Pangaülekanne</option>
+                  <option value="Sularaha">Sularaha</option>
                 </select>
               </div>
             </div>
             <div class="row" style="padding-top: 10px">
               <div class="col-4"></div>
               <div class="col-2">Lisainfo:</div>
-              <div class="col-2"><input class="bigger-bottom-input" type="text" aria-label="event-name"
+              <div class="col-2"><input v-model="participantForm.personInfo" class="bigger-bottom-input" type="text" aria-label="event-name"
                                         maxlength="1500"></div>
             </div>
           </div>
@@ -146,53 +145,62 @@
             <div class="row" style="padding-top: 10px">
               <div class="col-4"></div>
               <div class="col-2"><span>Ettevõtte juriidiline nimi:</span></div>
-              <div class="col-2"><input type="text" aria-label="event-name"></div>
+              <div class="col-2"><input v-model="participantForm.companyName" type="text" aria-label="event-name"></div>
             </div>
             <div class="row" style="padding-top: 10px">
               <div class="col-4"></div>
               <div class="col-2"><span>Ettevõtte registrikood:</span></div>
-              <div class="col-2"><input type="text" aria-label="event-name"></div>
+              <div class="col-2"><input v-model="participantForm.companyRegistrationCode" type="text" aria-label="event-name"></div>
             </div>
             <div class="row" style="padding-top: 10px">
               <div class="col-4"></div>
               <div class="col-2"><span>Ettevõttest tulevate osavõtjate arv:</span></div>
-              <div class="col-2"><input type="text" aria-label="event-name"></div>
+              <div class="col-2"><input v-model="participantForm.companyParticipantSum" type="text" aria-label="event-name"></div>
             </div>
             <div class="row" style="padding-top: 10px">
               <div class="col-4"></div>
               <div class="col-2"><span>Osavõtumaksu maksmise liik:</span></div>
               <div class="col-2">
-                <select class="select my-select-form">
+                <select v-model="participantForm.companyPaymentType" class="select my-select-form">
                   <option selected></option>
-                  <option value="1">Pangaülekanne</option>
-                  <option value="3">Sularaha</option>
+                  <option value="Pangaülekanne">Pangaülekanne</option>
+                  <option value="Sularaha">Sularaha</option>
                 </select>
               </div>
             </div>
             <div class="row" style="padding-top: 10px">
               <div class="col-4"></div>
               <div class="col-2">Lisainfo:</div>
-              <div class="col-2"><input class="bigger-bottom-input" type="text" aria-label="event-name"
+              <div class="col-2"><input v-model="participantForm.companyInfo" class="bigger-bottom-input" type="text" aria-label="event-name"
                                         maxlength="5000"></div>
             </div>
           </div>
 
-          <div class="row" style="padding-top: 30px">
-            <div class="col-4"></div>
-            <div class="col-4">
-              <button @click="toHome" type="button" class="btn btn-secondary btn-sm">Tagasi</button>
-              <span class="mx-2"></span>
-              <button type="button" class="btn btn-primary btn-sm"
-                      style="background-color: darkblue">
-                <span>Salvesta</span></button>
-            </div>
 
-
-          </div>
         </div>
       </div>
     </div>
   </div>
+
+  <div class="container" style="padding-bottom: 30px">
+  <div class="row g-0">
+    <div class="col-12" style="background-color: white">
+      <div class="form-floating mb-3">
+
+  <div class="row" style="padding-top: 30px">
+    <div class="col-4"></div>
+    <div class="col-4">
+      <button @click="toHome" type="button" class="btn btn-secondary btn-sm">Tagasi</button>
+      <span class="mx-2"></span>
+      <button @click="addParticipantToEvent" type="button" class="btn btn-primary btn-sm"
+              style="background-color: darkblue">
+        <span>Salvesta</span></button>
+    </div>
+  </div>
+        </div>
+        </div>
+        </div>
+        </div>
 </template>
 
 <script>
@@ -205,6 +213,7 @@ export default {
     return {
       eventId: Number(useRoute().query.eventId),
       selectedOption: 'Person',
+      participantId: 0,
       event: [
         {
           id: 0,
@@ -220,12 +229,28 @@ export default {
           id: 0,
           personFirstname: '',
           personLastname: '',
-          personCode: '',
+          personIdCode: 0,
           companyName: '',
           companyRegistrationCode: '',
           status: ''
         }
-      ]
+      ],
+      participantForm:
+        {
+          personFirstname: null,
+          personLastname: null,
+          personIdCode: null,
+          personPaymentType: null,
+          personInfo: null,
+          companyName: null,
+          companyRegistrationCode: null,
+          companyParticipantSum: null,
+          companyPaymentType: null,
+          companyInfo: null,
+          eventId: 0,
+          status: 'P'
+        }
+
     }
   },
   computed: {
@@ -253,6 +278,38 @@ export default {
         router.push({name: 'errorRoute'})
       })
     },
+    toDeleteParticipant: function (id) {
+      this.$http.delete("/participant/delete", {
+            params: {
+              participantId: id
+            }
+          }
+      ).then(response => {
+        window.location.reload();
+      }).catch(error => {
+        router.push({name: 'errorRoute'})
+      })
+    },
+    navigateToParticipantInfoView(id){
+      this.participantId = ''
+      this.participantId = id
+      router.push({name: 'participantInfoRoute', query: {participantId: id}})
+    },
+    addParticipantToEvent: function () {
+      this.participantForm.eventId = this.eventId
+      if (this.selectedOption === "Person") {
+        this.participantForm.status = 'P'
+      } else {
+        this.participantForm.status = 'C'
+      }
+      this.$http.post("/participant/add", this.participantForm
+      ).then(response => {
+        window.location.reload();
+      }).catch(error => {
+        router.push({name: 'errorRoute'})
+      })
+    },
+
 
     getEvent: function () {
       this.$http.get("/event/info", {
