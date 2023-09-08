@@ -18,44 +18,45 @@
       <div class="col-12" style="background-color: white">
         <div class="form-floating mb-3">
           <div class="row" style="padding-top: 10px">
-            <div class="col-4" ></div>
-            <div class="col-3" ><span style="color: darkblue; font-size: 1.5rem;">Ürituse lisamine</span></div>
+            <div class="col-4"></div>
+            <div class="col-3"><span style="color: darkblue; font-size: 1.5rem;">Ürituse lisamine</span></div>
           </div>
           <div class="row" style="padding-top: 10px">
-            <div class="col-4" ></div>
-            <div class="col-2" ><span>Ürituse nimi:</span></div>
-            <div class="col-2" ><input type="text" aria-label="event-name"></div>
+            <div class="col-4"></div>
+            <div class="col-2"><span>Ürituse nimi:</span></div>
+            <div class="col-2"><input v-model="newEvent.eventName" type="text" aria-label="event-name"></div>
           </div>
           <div class="row" style="padding-top: 10px">
-            <div class="col-4" ></div>
-            <div class="col-2" ><span>Toimumisaeg:</span></div>
-            <div class="col-2" >
-              <input type="datetime-local" id="datetimePicker" class="form-control">
+            <div class="col-4"></div>
+            <div class="col-2"><span>Toimumisaeg:</span></div>
+            <div class="col-2">
+              <input v-model="newEvent.eventDate" type="datetime-local" id="datetimePicker" class="form-control">
             </div>
           </div>
           <div class="row" style="padding-top: 10px">
-            <div class="col-4" ></div>
-            <div class="col-2" ><span>Koht:</span></div>
-            <div class="col-2" ><input type="text" aria-label="event-name"></div>
+            <div class="col-4"></div>
+            <div class="col-2"><span>Koht:</span></div>
+            <div class="col-2"><input v-model="newEvent.eventPlace" type="text" aria-label="event-name"></div>
           </div>
           <div class="row" style="padding-top: 10px">
-            <div class="col-4" ></div>
-            <div class="col-2" >Lisainfo:</div>
-            <div class="col-2" ><input class="bigger-bottom-input" type="text" aria-label="event-name" maxlength="5000"></div>
+            <div class="col-4"></div>
+            <div class="col-2">Lisainfo:</div>
+            <div class="col-2"><input v-model="newEvent.eventInfo" class="bigger-bottom-input" type="text"
+                                      aria-label="event-name" maxlength="5000"></div>
           </div>
           <div class="row" style="padding-top: 30px">
             <div class="col-4"></div>
-            <div class="col-4" ><button @click="toHome" type="button" class="btn btn-secondary btn-sm">Tagasi</button>
+            <div class="col-4">
+              <button @click="toHome" type="button" class="btn btn-secondary btn-sm">Tagasi</button>
               <span class="mx-2"></span>
-              <button type="button" class="btn btn-primary btn-sm" style="background-color: darkblue; padding-right: 23px;">
+              <button @click="addNewEvent" type="button" class="btn btn-primary btn-sm"
+                      style="background-color: darkblue; padding-right: 23px;">
                 <span>Lisa</span></button>
             </div>
-
-
           </div>
+        </div>
       </div>
     </div>
-  </div>
   </div>
 </template>
 
@@ -63,25 +64,42 @@
 import router from "@/router";
 
 export default {
-  methods: {
-    toHome(){
-      router.push({name: 'homeRoute'})
+  data() {
+    return {
+      newEvent:
+          {
+            id: 0,
+            eventName: '',
+            eventPlace: '',
+            eventDate: '',
+            eventInfo: '',
+            status: 'F'
+          }
     }
   },
-
-    mounted() {
-      var datetimePicker = document.getElementById("datetimePicker");
-
-      datetimePicker.addEventListener("input", function () {
-        var selectedDate = new Date(datetimePicker.value);
-        var currentDate = new Date();
-
-        if (selectedDate < currentDate) {
-          datetimePicker.value = "";
-        }
-      });
-    }
-
+  methods: {
+    toHome() {
+      router.push({name: 'homeRoute'})
+    },
+    addNewEvent: function () {
+      this.$http.post("/event/new", this.newEvent
+      ).then(response => {
+        window.location.reload();
+      }).catch(error => {
+        router.push({name: 'errorRoute'})
+      })
+    },
+  },
+  mounted() {
+    var datetimePicker = document.getElementById("datetimePicker");
+    datetimePicker.addEventListener("input", function () {
+      var selectedDate = new Date(datetimePicker.value);
+      var currentDate = new Date();
+      if (selectedDate < currentDate) {
+        datetimePicker.value = "";
+      }
+    });
+  }
 }
 </script>
 

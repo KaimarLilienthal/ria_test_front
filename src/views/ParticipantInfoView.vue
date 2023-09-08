@@ -13,8 +13,6 @@
       </div>
     </div>
   </div>
-
-
   <div class="container" style="padding-bottom: 30px">
     <div class="row g-0">
       <div class="col-12" style="background-color: white">
@@ -23,10 +21,8 @@
             <div class="col-4"></div>
             <div class="col-3"><span style="color: darkblue; font-size: 1.5rem;">Osavõtja info</span></div>
           </div>
-
-
           <div id="inputBoxContainerPerson">
-            <div  v-if="participant.status === 'P'" class="row" style="padding-top: 10px">
+            <div v-if="participant.status === 'P'" class="row" style="padding-top: 10px">
               <div class="col-4"></div>
               <div class="col-2"><span>Eesnimi:</span></div>
               <div class="col-2"><input v-model="participant.personFirstname" type="text" aria-label="event-name"></div>
@@ -36,7 +32,6 @@
               <div class="col-2"><span>Ettevõtte juriidiline nimi:</span></div>
               <div class="col-2"><input v-model="participant.companyName" type="text" aria-label="event-name"></div>
             </div>
-
             <div v-if="participant.status === 'P'" class="row" style="padding-top: 10px">
               <div class="col-4"></div>
               <div class="col-2"><span>Perenimi:</span></div>
@@ -45,9 +40,9 @@
             <div v-else class="row" style="padding-top: 10px">
               <div class="col-4"></div>
               <div class="col-2"><span>Ettevõtte registrikood:</span></div>
-              <div class="col-2"><input v-model="participant.companyRegistrationCode" type="text" aria-label="event-name"></div>
+              <div class="col-2"><input v-model="participant.companyRegistrationCode" type="text"
+                                        aria-label="event-name"></div>
             </div>
-
             <div v-if="participant.status === 'P'" class="row" style="padding-top: 10px">
               <div class="col-4"></div>
               <div class="col-2"><span>Isikukood:</span></div>
@@ -56,9 +51,9 @@
             <div v-else class="row" style="padding-top: 10px">
               <div class="col-4"></div>
               <div class="col-2"><span>Ettevõttest tulevate osavõtjate arv:</span></div>
-              <div class="col-2"><input v-model="participant.companyParticipantSum" type="text" aria-label="event-name"></div>
+              <div class="col-2"><input v-model="participant.companyParticipantSum" type="text" aria-label="event-name">
+              </div>
             </div>
-
             <div v-if="participant.status === 'P'" class="row" style="padding-top: 10px">
               <div class="col-4"></div>
               <div class="col-2"><span>Makseviis:</span></div>
@@ -79,34 +74,32 @@
                 </select>
               </div>
             </div>
-
             <div v-if="participant.status === 'P'" class="row" style="padding-top: 10px">
               <div class="col-4"></div>
               <div class="col-2">Lisainfo:</div>
-              <div class="col-2"><input v-model="participant.personInfo"  class="bigger-bottom-input" type="text" aria-label="event-name"
+              <div class="col-2"><input v-model="participant.personInfo" class="bigger-bottom-input" type="text"
+                                        aria-label="event-name"
                                         maxlength="1500">
               </div>
             </div>
             <div v-else class="row" style="padding-top: 10px">
               <div class="col-4"></div>
               <div class="col-2">Lisainfo:</div>
-              <div class="col-2"><input  v-model="participant.companyInfo" class="bigger-bottom-input" type="text" aria-label="event-name"
-                                         maxlength="5000"></div>
+              <div class="col-2"><input v-model="participant.companyInfo" class="bigger-bottom-input" type="text"
+                                        aria-label="event-name"
+                                        maxlength="5000"></div>
             </div>
           </div>
-
           <div class="row" style="padding-top: 30px">
             <div class="col-4"></div>
             <div class="col-4">
               <button @click="toHome" type="button" class="btn btn-secondary btn-sm">Tagasi</button>
               <span class="mx-2"></span>
-              <button @click="updateParticipant" type="button"  class="btn btn-primary btn-sm"
+              <button @click="updateParticipant" type="button" class="btn btn-primary btn-sm"
                       style="background-color: darkblue">
                 <span>Salvesta</span></button>
             </div>
           </div>
-
-
         </div>
       </div>
     </div>
@@ -116,7 +109,6 @@
 <script>
 import router from "@/router"
 import {useRoute} from "vue-router";
-
 
 export default {
   data() {
@@ -139,7 +131,6 @@ export default {
           }
     }
   },
-
   methods: {
     getParticipantInfo: function () {
       this.$http.get("/participant/info", {
@@ -165,7 +156,6 @@ export default {
         const errorResponseBody = error.response.data
       })
     },
-
     toHome() {
       router.push({name: 'homeRoute'})
     },
@@ -174,7 +164,5 @@ export default {
     this.getParticipantInfo()
   }
 }
-
-
 </script>
 

@@ -13,27 +13,20 @@
             </a>
           </div>
         </div>
-
         <div class="col-1-auto">
           <router-link to="/" class="nav-link" style="color: #080880; font-size: smaller; padding: 18px 0.5rem; font-weight: bold;">AVALEHT</router-link>
         </div>
-
         <div class="col-2-auto">
           <router-link to="/event/new" class="nav-link" style="color: #080880; font-size: smaller; padding: 18px 0.5rem; font-weight: bold;">ÜRITUSE LISAMINE</router-link>
         </div>
-
-
-
         <div class="flex-grow-1 d-flex justify-content-end">
           <a>
             <img src="@/assets/symbol.svg" alt="Symbol" width="50" height="50">
           </a>
         </div>
-
       </div>
     </header>
     <router-view/>
-
     <footer class="footer my-footer">
       <div class="container text-lg-start">
         <div class="row">
@@ -68,10 +61,8 @@
         </div>
       </div>
     </footer>
-
   </div>
 </template>
-
 
 <script>
 </script>

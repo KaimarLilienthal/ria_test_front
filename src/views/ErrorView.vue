@@ -1,9 +1,8 @@
 <template>
   <div class="about">
-    <h1>Mingi jama!</h1>
+    <h1>Vabandame! Tehnline rike</h1>
   </div>
 </template>
-
 <script>
 export default {
   name: 'aboutRoute'

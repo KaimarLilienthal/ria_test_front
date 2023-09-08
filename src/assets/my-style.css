@@ -54,3 +54,7 @@ body {
     width: 188px;
 }
 
+.remove {
+    max-width: 20px;
+    height: auto;
+}

@@ -18,7 +18,6 @@
         </div>
       </div>
       <div class="col-6">
-
         <img src="../assets/pilt.jpg" height="319" width="558"/>
       </div>
     </div>
@@ -63,13 +62,14 @@
               <th scope="row">{{ index + 1 }}</th>
               <td>{{ activeEvent.eventName }}</td>
               <td>{{ activeEvent.eventDate }}</td>
-              <td @click="navigateToParticipantView(activeEvent.id)" style="text-decoration: none; color: inherit;">OSAVÕTJAD</td>
-              <td @click="toDeleteEvent(activeEvent.id)" style="cursor: pointer;">X</td>
+              <td @click="navigateToParticipantView(activeEvent.id)" style="text-decoration: none; color: inherit;">
+                OSAVÕTJAD
+              </td>
+              <td @click="toDeleteEvent(activeEvent.id)" style="cursor: pointer;"><img class="remove" src="../assets/remove.svg"></td>
             </tr>
             </tbody>
           </table>
         </div>
-
       </div>
       <div class="col-6 d-flex align-items-center  justify-content-center">
         <div style="background-color: white; height: 100%; width:calc(100% + 5px);">
@@ -92,12 +92,10 @@
               <td>{{ pastEvent.eventDate }}</td>
               <td><a @click="navigateToParticipantView(pastEvent.id)" style="text-decoration: none; color: inherit;">OSAVÕTJAD</a>
               </td>
-              <td @click="toDeleteEvent(pastEvent.id)" style="cursor: pointer;">X</td>
+              <td @click="toDeleteEvent(pastEvent.id)" style="cursor: pointer;"><img class="remove" src="../assets/remove.svg"></td>
             </tr>
             </tbody>
           </table>
-
-
         </div>
       </div>
       <div class="d-flex align-items-center justify-content-between">
@@ -105,14 +103,12 @@
       </div>
     </div>
   </div>
-
 </template>
 
 <script>
 import router from "@/router";
 
 export default {
-
   name: 'homeRoute',
   data() {
     return {
@@ -139,7 +135,6 @@ export default {
     toAddNewEvent() {
       router.push({name: 'addNewEventRoute'})
     },
-
     getAllActiveEvents: function () {
       this.$http.get("/event", {
             params: {
@@ -168,14 +163,11 @@ export default {
             router.push({name: 'errorRoute'})
           })
     },
-
     navigateToParticipantView(id) {
       this.eventId = ''
       this.eventId = id
       router.push({name: 'participantRoute', query: {eventId: this.eventId}})
     },
-
-
     toDeleteEvent: function (id) {
       this.$http.delete("/event/delete", {
             params: {
@@ -188,7 +180,6 @@ export default {
         console.log('Error:', error);
       })
     },
-
     formatEventDates(events) {
       for (let i = 0; i < events.length; i++) {
         if (events[i].eventDate) {
@@ -196,7 +187,6 @@ export default {
         }
       }
     },
-
     formatDate(inputDate) {
       const parts = inputDate.split('-');
       if (parts.length === 3) {
@@ -206,17 +196,13 @@ export default {
         // Handle invalid date format
         return 'Invalid Date';
       }
-    }
-    ,
+    },
   },
   beforeMount() {
     this.getAllActiveEvents()
     this.getAllPastEvents()
   }
-  ,
-
 }
-
 </script>
 
 
