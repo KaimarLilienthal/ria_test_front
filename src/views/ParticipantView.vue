@@ -194,7 +194,8 @@
             <div class="col-4">
               <button @click="toHome" type="button" class="btn btn-secondary btn-sm">Tagasi</button>
               <span class="mx-2"></span>
-              <button v-if="event.status === 'F'" @click="addParticipantToEvent" type="button" class="btn btn-primary btn-sm"
+              <button v-if="event.status === 'F'" @click="addParticipantToEvent" type="button"
+                      class="btn btn-primary btn-sm"
                       style="background-color: darkblue">
                 <span>Salvesta</span></button>
             </div>
@@ -332,8 +333,8 @@ export default {
     }
   },
   beforeMount() {
-    this.getEvent(),
-        this.getEventParticipants()
+    this.getEvent()
+    this.getEventParticipants()
   }
 }
 </script>
