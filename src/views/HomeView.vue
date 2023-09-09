@@ -65,7 +65,8 @@
               <td @click="navigateToParticipantView(activeEvent.id)" style="text-decoration: none; color: inherit;">
                 OSAVÕTJAD
               </td>
-              <td @click="toDeleteEvent(activeEvent.id)" style="cursor: pointer;"><img class="remove" src="../assets/remove.svg"></td>
+              <td @click="toDeleteEvent(activeEvent.id)" style="cursor: pointer;"><img class="remove"
+                                                                                       src="../assets/remove.svg"></td>
             </tr>
             </tbody>
           </table>
@@ -92,7 +93,8 @@
               <td>{{ pastEvent.eventDate }}</td>
               <td><a @click="navigateToParticipantView(pastEvent.id)" style="text-decoration: none; color: inherit;">OSAVÕTJAD</a>
               </td>
-              <td @click="toDeleteEvent(pastEvent.id)" style="cursor: pointer;"><img class="remove" src="../assets/remove.svg"></td>
+              <td @click="toDeleteEvent(pastEvent.id)" style="cursor: pointer;"><img class="remove"
+                                                                                     src="../assets/remove.svg"></td>
             </tr>
             </tbody>
           </table>
@@ -107,6 +109,7 @@
 
 <script>
 import router from "@/router";
+import axios from "axios";
 
 export default {
   name: 'homeRoute',
@@ -197,8 +200,18 @@ export default {
         return 'Invalid Date';
       }
     },
+    updateEventStatus: function () {
+      axios.get("updateEventStatus")
+          .then(response => {
+            const responseBody = response.data
+          })
+          .catch(error => {
+            const errorResponseBody = error.response.data
+          })
+    },
   },
   beforeMount() {
+    this.updateEventStatus()
     this.getAllActiveEvents()
     this.getAllPastEvents()
   }
